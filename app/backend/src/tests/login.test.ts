@@ -6,7 +6,7 @@ import chaiHttp = require('chai-http');
 
 import App from '../app';
 import User from '../database/models/User';
-import { mockUser, mockLoginBody } from './mocks/login.mock';
+import { mockUser, mockLoginBody, mockLoginPassword } from './mocks/login.mock';
 
 import { Response } from 'superagent';
 
@@ -24,16 +24,31 @@ describe('Testando a rota login', () => {
     (bcrypt.compare as sinon.SinonStub).restore();
   })
 
-  it('Se o login é realizado com sucesso', async () => {
-    sinon.stub(User, "findOne").resolves({ ...mockUser } as User);
-    sinon.stub(bcrypt, "compare").resolves(true);
-    
-    chaiHttpResponse = await chai
-      .request(app)
-      .post('/login')
-      .send(mockLoginBody);
+  describe('Caso de sucesso', () => {
+    it('Se o login é realizado com sucesso', async () => {
+      sinon.stub(User, "findOne").resolves({ ...mockUser } as User);
+      sinon.stub(bcrypt, "compare").resolves(true);
+      
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send(mockLoginBody);
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body).to.be.haveOwnProperty('token');
+    });
+  })
 
-    expect(chaiHttpResponse.status).to.be.equal(200);
-    expect(chaiHttpResponse.body).to.be.haveOwnProperty('token');
-  });
+  describe('Casos de falhas', () => {
+    it('Se o login falha se faltar o email', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send(mockLoginPassword);
+  
+      expect(chaiHttpResponse.status).to.be.equal(400);
+      expect(chaiHttpResponse.body).to.be.haveOwnProperty('message');
+      expect(chaiHttpResponse.body.message).to.be.equal('All fields must be filled');
+    });
+  })
 });
