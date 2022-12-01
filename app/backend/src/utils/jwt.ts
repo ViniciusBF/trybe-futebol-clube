@@ -1,5 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { IUser } from '../interfaces/IUser';
+import { Ijwt } from '../interfaces/IJwt';
+import HttpException from './http';
 
 const createToken = (data: IUser) => {
   const { password, ...userData } = data;
@@ -9,6 +11,16 @@ const createToken = (data: IUser) => {
   });
 
   return token;
+};
+
+export const validateToken = (token: string): Ijwt => {
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET as string);
+
+    return user as Ijwt;
+  } catch (error) {
+    throw new HttpException(401, 'Incorrect email or password');
+  }
 };
 
 export default createToken;
