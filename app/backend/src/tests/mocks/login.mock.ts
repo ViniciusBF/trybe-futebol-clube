@@ -3,10 +3,6 @@ export const mockLoginBody = {
   password: 'password',
 };
 
-export const mockLoginPassword = {
-  password: 'password',
-};
-
 export const mockUser = {
   id: 999,
   username: 'User',
