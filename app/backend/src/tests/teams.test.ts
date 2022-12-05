@@ -17,23 +17,18 @@ const { expect } = chai;
 
 describe('Testando a rota teams', () => {
   let chaiHttpResponse: Response;
-
-  afterEach(()=>{
-    (Team.findAll as sinon.SinonStub).restore();
-    (Team.findByPk as sinon.SinonStub).restore();
-    console.log('teste');
-  })
   
   it('Se o possivel retornar todos os times', async () => {
     sinon.stub(Team, "findAll").resolves(mockTeam as Team[]);
     
     chaiHttpResponse = await chai
       .request(app)
-      .post('/teams')
-      .send();
+      .get('/teams');
 
     expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.deep.equal(mockTeam);
+
+    (Team.findAll as sinon.SinonStub).restore();
   });
 
   it('Se o possivel retornar um time', async () => {
@@ -41,10 +36,11 @@ describe('Testando a rota teams', () => {
     
     chaiHttpResponse = await chai
       .request(app)
-      .post('/teams/1')
-      .send();
+      .get('/teams/1');
 
     expect(chaiHttpResponse.status).to.be.equal(200);
     expect(chaiHttpResponse.body).to.deep.equal(mockTeam[1]);
+
+    (Team.findByPk as sinon.SinonStub).restore();
   });
 });
