@@ -17,7 +17,8 @@ export default class LoginService {
       throw new HttpException(401, 'Incorrect email or password');
     }
 
-    const token = createToken(user.dataValues);
+    const { username, role, id } = user;
+    const token = createToken({ username, role, email, id, password });
     return token;
   };
 }

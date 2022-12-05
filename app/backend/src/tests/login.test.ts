@@ -19,11 +19,6 @@ const { expect } = chai;
 describe('Testando a rota login', () => {
   let chaiHttpResponse: Response;
 
-  after(()=>{
-    (User.findOne as sinon.SinonStub).restore();
-    (bcrypt.compare as sinon.SinonStub).restore();
-  })
-
   describe('Caso de sucesso', () => {
     it('Se o login é realizado com sucesso', async () => {
       sinon.stub(User, "findOne").resolves({ ...mockUser } as User);
@@ -60,6 +55,8 @@ describe('Testando a rota login', () => {
       expect(chaiHttpResponse.status).to.be.equal(400);
       expect(chaiHttpResponse.body).to.be.haveOwnProperty('message');
       expect(chaiHttpResponse.body.message).to.be.equal('All fields must be filled');
+
+      (User.findOne as sinon.SinonStub).restore();
     });
 
     it('Se o login falha quando não encontar um email correspondente', async () => {
@@ -73,10 +70,13 @@ describe('Testando a rota login', () => {
       expect(chaiHttpResponse.status).to.be.equal(401);
       expect(chaiHttpResponse.body).to.be.haveOwnProperty('message');
       expect(chaiHttpResponse.body.message).to.be.equal('Incorrect email or password');
+
+      (User.findOne as sinon.SinonStub).restore();
+      (bcrypt.compare as sinon.SinonStub).restore();
     });
 
     it('Se o login falha quando a senha não corresponder', async () => {
-      sinon.stub(User, "findOne").resolves(null);
+      sinon.stub(User, "findOne").resolves({ ...mockUser } as User);
       sinon.stub(bcrypt, "compare").resolves(false);
 
       chaiHttpResponse = await chai
@@ -87,6 +87,9 @@ describe('Testando a rota login', () => {
       expect(chaiHttpResponse.status).to.be.equal(401);
       expect(chaiHttpResponse.body).to.be.haveOwnProperty('message');
       expect(chaiHttpResponse.body.message).to.be.equal('Incorrect email or password');
+
+      (User.findOne as sinon.SinonStub).restore();
+      (bcrypt.compare as sinon.SinonStub).restore();
     });
   })
 });
