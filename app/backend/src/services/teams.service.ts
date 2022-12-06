@@ -15,7 +15,7 @@ export default class TeamsService {
     const teams = await this._model.findByPk(id);
 
     if (!teams) {
-      throw new HttpException(404, 'Team not found');
+      throw new HttpException(404, 'There is no team with such id!');
     }
 
     return teams;

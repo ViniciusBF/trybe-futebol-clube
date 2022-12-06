@@ -1,5 +1,6 @@
 import LoginService from './login.services';
 import TeamsService from './teams.service';
+import MatchesService from './matches.service';
 
 export default LoginService;
-export { TeamsService };
+export { TeamsService, MatchesService };

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { TeamsService } from '../services';
 
-export default class teamsController {
+export default class TeamsController {
   private _service = new TeamsService();
 
   getAll = async (_req: Request, res: Response) => {

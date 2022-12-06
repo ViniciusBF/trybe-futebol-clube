@@ -8,4 +8,12 @@ const checkLogin = Joi.object({
   'string.empty': 'All fields must be filled',
 });
 
+const insertValidation = Joi.object({
+  homeTeam: Joi.number().required(),
+  awayTeam: Joi.number().invalid(Joi.ref('homeTeam')).required(),
+  awayTeamGoals: Joi.number().required(),
+  homeTeamGoals: Joi.number().required(),
+}).messages({ 'any.invalid': 'It is not possible to create a match with two equal teams' });
+
 export default checkLogin;
+export { insertValidation };

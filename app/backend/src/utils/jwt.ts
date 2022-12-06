@@ -19,7 +19,7 @@ export const validateToken = (token: string): Ijwt => {
 
     return user as Ijwt;
   } catch (error) {
-    throw new HttpException(401, 'Incorrect email or password');
+    throw new HttpException(401, 'Token must be a valid token');
   }
 };
 
